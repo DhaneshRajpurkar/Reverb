@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack With The Beat: Lyric Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        input[type="text"] {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .result-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: #e74c3c;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .wordcloud-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .wordcloud-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .sentiment-scores p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .mood-bar {
+            width: 100%;
+            height: 25px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .mood-fill {
+            height: 100%;
+            background-color: #f39c12; /* Neutral default */
+            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .positive { background-color: #27ae60; } /* Green */
+        .negative { background-color: #e74c3c; } /* Red */
+        .neutral { background-color: #f39c12; }  /* Orange */
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('main_index') }}" style="position: absolute; top: 15px; left: 15px; text-decoration: none; color: #3498db; font-weight: bold;">← Back to Main Hub</a>
+    <div class="container">
+        <h1>Hack With The Beat: Lyric Analyzer 🎶</h1>
+
+        <form action="/" method="POST">
+            <label for="song_title">Song Title:</label>
+            <input type="text" id="song_title" name="song_title" placeholder="e.g., Bohemian Rhapsody" required>
+
+            <label for="artist_name">Artist Name:</label>
+            <input type="text" id="artist_name" name="artist_name" placeholder="e.g., Queen" required>
+
+            <button type="submit">Analyze Lyrics!</button>
+        </form>
+
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+
+        {% if wordcloud_image %}
+            <div class="result-section">
+                <h2>Analysis Results</h2>
+
+                <div class="wordcloud-container">
+                    <h3>Sentiment Word Cloud</h3>
+                    <img src="{{ url_for('serve_static', filename=wordcloud_image.split('/')[-1]) }}" alt="Sentiment Word Cloud">
+                </div>
+
+                <div class="sentiment-scores">
+                    <h3>Overall Sentiment: {{ mood }}</h3>
+                    <p><strong>Positive:</strong> {{ "%.2f"|format(sentiment.pos) }}</p>
+                    <p><strong>Negative:</strong> {{ "%.2f"|format(sentiment.neg) }}</p>
+                    <p><strong>Neutral:</strong> {{ "%.2f"|format(sentiment.neu) }}</p>
+                    <p><strong>Compound Score:</strong> {{ "%.2f"|format(sentiment.compound) }}</p>
+
+                    <div class="mood-bar">
+                        <div class="mood-fill {% if sentiment.compound >= 0.05 %}positive{% elif sentiment.compound <= -0.05 %}negative{% else %}neutral{% endif %}"
+                             style="width: {% if sentiment.compound >= 0.05 %}{{ sentiment.pos * 100 }}%{% elif sentiment.compound <= -0.05 %}{{ sentiment.neg * 100 }}%{% else %}{{ sentiment.neu * 100 }}%{% endif %};">
+                            {% if sentiment.compound >= 0.05 %}Positive{% elif sentiment.compound <= -0.05 %}Negative{% else %}Neutral{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+        {% endif %}
+    </div>
+</body>
+</html>
