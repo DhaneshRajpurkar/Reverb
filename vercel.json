@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "test_vercel_flask" }
+    { "source": "/(.*)", "destination": "/api/index" }
   ]
 }
