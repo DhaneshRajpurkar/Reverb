@@ -1,1 +1,5 @@
 .vercel
+.python-version
+__pycache__
+uv.lock
+*.pyc
