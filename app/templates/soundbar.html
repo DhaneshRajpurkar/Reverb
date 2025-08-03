@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Soundbar</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js CDN for audio synthesis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right bottom, #1a202c, #2d3748); /* Dark gradient background */
+            color: #e2e8f0; /* Light text color */
+        }
+        .sound-button {
+            @apply flex-1 py-4 px-6 m-2 rounded-xl text-lg font-semibold shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-opacity-75;
+            min-width: 120px; /* Ensure buttons have a minimum width */
+            cursor: pointer;
+        }
+        /* Specific button styles */
+        .button-red { @apply bg-red-600 hover:bg-red-700 focus:ring-red-500; }
+        .button-blue { @apply bg-blue-600 hover:bg-blue-700 focus:ring-blue-500; }
+        .button-green { @apply bg-green-600 hover:bg-green-700 focus:ring-green-500; }
+        .button-purple { @apply bg-purple-600 hover:bg-purple-700 focus:ring-purple-500; }
+        .button-yellow { @apply bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500; }
+        .button-teal { @apply bg-teal-600 hover:bg-teal-700 focus:ring-teal-500; }
+        .start-audio-button {
+            @apply bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white py-3 px-8 rounded-xl text-xl font-bold shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-opacity-75;
+        }
+        .message-box {
+            @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-800 text-white p-6 rounded-xl shadow-2xl z-50 flex flex-col items-center;
+        }
+        .message-box button {
+            @apply mt-4 bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- This is the "Back to Main Hub" button. Don't remove it. -->
+    <a href="{{ url_for('main_index') }}" style="position: absolute; top: 15px; left: 15px; text-decoration: none; color: #3498db; font-weight: bold;">← Back to Main Hub</a>
+
+    <!-- This is where your soundbar app's HTML code goes. -->
+    <!-- You should only copy and paste the content from your original <body> and <script> tags, not the full <html> or <head> tags. -->
+    <!-- The code below is a placeholder to show you where to paste your content. -->
+
+    <div id="app" class="flex flex-col items-center justify-center p-6 bg-gray-800 rounded-3xl shadow-2xl max-w-4xl w-full mx-4">
+        <h1 class="text-4xl font-bold mb-8 text-center text-indigo-400">Interactive Soundbar</h1>
+
+        <!-- Start Audio Button - required for browser audio policies -->
+        <button id="startAudioBtn" class="start-audio-button mb-8">
+            Start Audio
+        </button>
+
+        <div id="soundbar" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
+            <!-- Sound Buttons -->
+            <button id="sound1" class="sound-button button-red">Synth Pad</button>
+            <button id="sound2" class="sound-button button-blue">Kick Drum</button>
+            <button id="sound3" class="sound-button button-green">Hi-Hat</button>
+            <button id="sound4" class="sound-button button-purple">Bass Line</button>
+            <button id="sound5" class="sound-button button-yellow">Pluck Synth</button>
+            <button id="sound6" class="sound-button button-teal">Snare Drum</button>
+            <button id="sound7" class="sound-button button-red">Arpeggio</button>
+            <button id="sound8" class="sound-button button-blue">Percussion</button>
+        </div>
+    </div>
+
+    <!-- Message Box for user notifications -->
+    <div id="messageBox" class="hidden message-box">
+        <p id="messageText" class="text-center"></p>
+        <button id="messageBoxClose">OK</button>
+    </div>
+
+    <script>
+        // Place your JavaScript code here.
+        // It can include the functions and event listeners from your soundbar app.
+        // I've included the original code here as a reminder.
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+        function hideMessageBox() {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.classList.add('hidden');
+        }
+        document.getElementById('messageBoxClose').addEventListener('click', hideMessageBox);
+        let synth, membraneSynth, polySynth, fmSynth, metalSynth;
+        let initialized = false;
+        async function initializeAudio() {
+            if (initialized) return;
+            try {
+                await Tone.start();
+                console.log('Audio context started');
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: {
+                        attack: 0.005, decay: 0.1, sustain: 0.3, release: 1
+                    }
+                }).toDestination();
+                membraneSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.05, octaves: 10, oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4, attackCurve: "exponential"
+                    }
+                }).toDestination();
+                fmSynth = new Tone.FMSynth({
+                    harmonicity: 3.0, modulationIndex: 10, oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.01, decay: 0.2, sustain: 0.01, release: 0.5
+                    },
+                    modulation: { type: "square" },
+                    modulationEnvelope: {
+                        attack: 0.01, decay: 0.5, sustain: 0.01, release: 0.5
+                    }
+                }).toDestination();
+                metalSynth = new Tone.MetalSynth({
+                    frequency: 200, envelope: { attack: 0.001, decay: 0.1, release: 0.05 },
+                    harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5
+                }).toDestination();
+                const startAudioBtn = document.getElementById('startAudioBtn');
+                if (startAudioBtn) { startAudioBtn.remove(); }
+                initialized = true;
+                showMessageBox("Audio is ready! Click the sound buttons.");
+            } catch (error) {
+                console.error("Error starting audio context:", error);
+                showMessageBox("Failed to start audio. Please try refreshing the page or check console for errors.");
+            }
+        }
+        document.getElementById('startAudioBtn').addEventListener('click', initializeAudio);
+        function playSound(buttonId) {
+            if (!initialized) {
+                showMessageBox("Please click 'Start Audio' first to enable sounds.");
+                return;
+            }
+            switch (buttonId) {
+                case 'sound1':
+                    synth.triggerAttackRelease("C4", "2n");
+                    synth.triggerAttackRelease("E4", "2n", "+0.5");
+                    synth.triggerAttackRelease("G4", "2n", "+1");
+                    break;
+                case 'sound2':
+                    membraneSynth.triggerAttackRelease("C2", "8n");
+                    break;
+                case 'sound3':
+                    metalSynth.triggerAttackRelease("C6", "16n");
+                    break;
+                case 'sound4':
+                    synth.triggerAttackRelease("C2", "4n");
+                    synth.triggerAttackRelease("G2", "4n", "+0.5");
+                    synth.triggerAttackRelease("A2", "4n", "+1");
+                    synth.triggerAttackRelease("F2", "4n", "+1.5");
+                    break;
+                case 'sound5':
+                    fmSynth.triggerAttackRelease("C5", "8n");
+                    break;
+                case 'sound6':
+                    const noise = new Tone.NoiseSynth().toDestination();
+                    noise.triggerAttackRelease("16n");
+                    membraneSynth.triggerAttackRelease("E3", "16n", "+0.05");
+                    break;
+                case 'sound7':
+                    const now = Tone.now();
+                    synth.triggerAttackRelease("C4", "8n", now);
+                    synth.triggerAttackRelease("E4", "8n", now + 0.1);
+                    synth.triggerAttackRelease("G4", "8n", now + 0.2);
+                    synth.triggerAttackRelease("C5", "8n", now + 0.3);
+                    break;
+                case 'sound8':
+                    const notes = ["C3", "D3", "E3", "G3", "A3"];
+                    const randomNote = notes[Math.floor(Math.random() * notes.length)];
+                    membraneSynth.triggerAttackRelease(randomNote, "8n");
+                    break;
+                default:
+                    console.warn("Unknown sound button clicked:", buttonId);
+                    break;
+            }
+        }
+        document.querySelectorAll('.sound-button').forEach(button => {
+            button.addEventListener('click', () => {
+                playSound(button.id);
+            });
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+        });
+    </script>
+</body>
+</html>
