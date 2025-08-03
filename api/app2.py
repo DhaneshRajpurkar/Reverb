@@ -163,6 +163,16 @@ def get_song_lyrics(song_title, artist_name):
 
 # --- Flask Routes ---
 
+
+@app.route('/test')
+def home():
+    return 'Hello, World! Welcome to the API sample from Dhanesh.. using Vercel-Flask-Template'
+
+@app.route('/test/about')
+def about():
+    return 'you have reached the endpoint About -- this one only shows that the vercel-flask-template works with any endpoint'
+
+
 @app.route('/')
 def main_index():
     """
