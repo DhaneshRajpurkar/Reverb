@@ -1,16 +1,8 @@
 {
-  "version": 2,
-  "name": "reverb",
-  "env": {
-    "FLASK_ENV": "production"
-  },
   "builds": [
     {
       "src": "app.py",
-      "use": "@vercel/python",
-      "env": {
-        "FLASK_ENV": "production"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
