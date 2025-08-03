@@ -2,10 +2,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/template')
 def home():
-    return 'Hello, World!'
+    return 'Hello, World! Welcome to the API sample from Dhanesh.. using Vercel-Flask-Template'
 
-@app.route('/about')
+@app.route('/template/about')
 def about():
-    return 'About'
+    return 'you have reached the endpoint About -- this one only shows that the vercel-flask-template works with any endpoint'
