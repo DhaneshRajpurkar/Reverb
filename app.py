@@ -22,8 +22,12 @@ analyzer = SentimentIntensityAnalyzer(lexicon_file="vader_lexicon.txt")
 # except Exception as e:
 #     print(f"error initializing sentiment analyzer...: {e}")
 
+# print("Sentiment analyzer initialized.")
+
 # Initialize Flask app
 app = Flask(__name__)
+
+# print("Flask app initialized.")
 
 # --- Helper Functions (Your existing functions) ---
 def search_song_on_genius(song_title, artist_name):
@@ -158,6 +162,8 @@ def get_song_lyrics(song_title, artist_name):
         return lyrics
     return "Song not found."
 
+
+# print("Helper functions defined as well.")
 # --- Flask Routes ---
 
 @app.route('/')
@@ -212,3 +218,7 @@ def soundbar_app():
     The route for the soundbar app.
     """
     return render_template('soundbar.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
