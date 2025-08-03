@@ -215,8 +215,3 @@ def soundbar_app():
     The route for the soundbar app.
     """
     return render_template('soundbar.html')
-
-# --- Run Flask App ---
-if __name__ == "__main__":
-    print("Starting Flask application...")
-    app.run(debug=True)
