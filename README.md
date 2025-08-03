@@ -27,5 +27,7 @@ Real-time Rendering: An animation loop constantly updates the height of each bar
 
 
 This was done for the Hack With The Beat Hackathon
-Url of HWTB --> 
+
+Url of HWTB --> https://hackwiththebeat.com/
+
 URL of Reverb: (will be happening)
