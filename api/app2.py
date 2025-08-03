@@ -17,13 +17,7 @@ GENIUS_ACCESS_TOKEN = "IXqQ9CVYss5OoeMTNd65QJYUc8CMKRuXUBRAoTYvtfh_6h2K7lx7sOysj
 GENIUS_API_URL = "https://api.genius.com"
 
 # Initialize NLTK's VADER sentiment analyzer
-try:
-    analyzer = SentimentIntensityAnalyzer()
-except LookupError:
-    # This block handles the case where the lexicon is not downloaded
-    print("VADER lexicon not found. Downloading...")
-    nltk.download('vader_lexicon')
-    analyzer = SentimentIntensityAnalyzer()
+analyzer = SentimentIntensityAnalyzer(lexicon_file="vader_lexicon.txt")
 
 # Initialize Flask app
 app = Flask(__name__)
