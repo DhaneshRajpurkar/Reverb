@@ -23,7 +23,12 @@ Visual Processing (Frontend): The client-side JavaScript receives this audio dat
 Real-time Rendering: An animation loop constantly updates the height of each bar on the canvas based on the amplitude of the corresponding frequency in the sound signal. This creates the dynamic, "bouncing" effect you see as the sound plays, providing a direct visual representation of the audio waves.
 
 
-
+## How to run this app?
+* ideally try out from the vercel URL below
+* alternately clone this repository to your local machine
+  * use UV package manager, run ```ur init``` in the project folder, it will use pyproject.toml
+  * run the application using uv, ```uv run app.py```
+  * navigate in your browser to https://localhost:5000/
 
 
 This was done for the Hack With The Beat Hackathon
@@ -31,3 +36,6 @@ This was done for the Hack With The Beat Hackathon
 Url of HWTB --> https://hackwiththebeat.com/
 
 URL of Reverb: (will be happening)
+https://reverb-two.vercel.app/
+
+
