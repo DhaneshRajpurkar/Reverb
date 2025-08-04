@@ -28,7 +28,7 @@ Real-time Rendering: An animation loop constantly updates the height of each bar
 * alternately clone this repository to your local machine
   * use UV package manager, run ```ur init``` in the project folder, it will use pyproject.toml
   * run the application using uv, ```uv run app.py```
-  * navigate in your browser to https://localhost:5000/
+  * navigate in your browser to http://localhost:5000/
 
 
 This was done for the Hack With The Beat Hackathon
