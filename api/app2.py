@@ -64,10 +64,13 @@ def get_lyrics_from_url(song_url):
 
         # List of potential selectors for the lyrics container
         potential_selectors = [
-            "div.Lyrics__Container-sc-1ynbvzw-5",  # Common selector
-            "div[data-lyrics-container='true']",    # Another common selector
-            "div.lyrics",                          # Older, simple selector
-            "div.SongPage__Lyrics-sc-17j49q-4"     # Yet another variant
+            "div.Lyrics__Container-sc-1ynbvzw-5",      # The most common selector
+            "div[data-lyrics-container='true']",       # Another common selector
+            "div.lyrics",                              # A simple, older selector
+            "div.SongPage__Lyrics-sc-17j49q-4",        # Another variant
+            "div.lyrics-container",                    # Yet another potential class
+            "div.LyricsPlaceholder__LyricsPlaceholderContainer-sc-1s9794n-0", # Placeholder class
+            "div.Lyrics__Root-sc-1ynbvzw-0"            # A root container class
         ]
 
         lyrics_div = None
